@@ -1,0 +1,33 @@
+<template>
+    <lightning-breadcrumbs class="slds-p-bottom_medium">
+        <template for:each={_resolvedCategoryPath} for:item="level">
+            <lightning-breadcrumb key={level.name} label={level.name} href={level.url}>
+            </lightning-breadcrumb>
+        </template>
+    </lightning-breadcrumbs>
+    <div class="product-information">
+        <div class="image slds-m-right_small">
+            <figure
+                class="slds-p-around_xx-small slds-border_top slds-border_right slds-border_bottom slds-border_left">
+                <img src={image.url} alt={image.alternativeText} />
+            </figure>
+        </div>
+        <div class="details-area">
+            <div class="heading">
+                <h2 class="slds-text-heading_medium">{name}</h2>
+                <div class="slds-p-top_x-small">SKU: {sku}</div>
+            </div>
+            <div class="price">
+                <span if:false={hasPrice}>Price Unavailable</span>
+                <lightning-formatted-number if:true={hasPrice} currency-code={price.currency} format-style="currency"
+                    value={price.negotiated}>
+                </lightning-formatted-number>
+            </div>
+            <lightning-accordion active-section-name="description" allow-multiple-sections-open>
+                <lightning-accordion-section name="description" label="Description">
+                    <lightning-formatted-rich-text value={description}></lightning-formatted-rich-text>
+                </lightning-accordion-section>
+            </lightning-accordion>
+        </div>
+    </div>
+</template>
