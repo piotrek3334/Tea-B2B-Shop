@@ -1,0 +1,9 @@
+<template>
+    <lightning-spinner if:false={hasProduct} class="slds-is-relative slds-align_absolute-center slds-m-around_large"
+        alternative-text="Loading product information..." size="medium" variant="brand">
+    </lightning-spinner>
+    <c-product-details-display if:true={hasProduct} description={displayableProduct.description}
+        image={displayableProduct.image} name={displayableProduct.name} price={displayableProduct.price}
+        sku={displayableProduct.sku}>
+    </c-product-details-display>
+</template>
