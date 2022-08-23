@@ -76,6 +76,8 @@ export default class ProductDetails extends LightningElement {
     })
     product;
 
+
+
     /**
      * The price of the product for the user, if any.
      *
