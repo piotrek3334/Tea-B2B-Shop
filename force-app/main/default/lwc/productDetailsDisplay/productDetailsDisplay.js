@@ -10,46 +10,7 @@ const homePage = {
     }
 };
 
-/**
- * An organized display of product information.
- *
- * @fires ProductDetailsDisplay#addtocart
- * @fires ProductDetailsDisplay#createandaddtolist
- */
-export default class ProductDetailsDisplay extends NavigationMixin(
-    LightningElement
-) {
-    /**
-     * An event fired when the user indicates the product should be added to their cart.
-     *
-     * Properties:
-     *   - Bubbles: false
-     *   - Composed: false
-     *   - Cancelable: false
-     *
-     * @event ProductDetailsDisplay#addtocart
-     * @type {CustomEvent}
-     *
-     * @property {string} detail.quantity
-     *  The number of items to add to cart.
-     *
-     * @export
-     */
-
-    /**
-     * An event fired when the user indicates the product should be added to a new wishlist
-     *
-     * Properties:
-     *   - Bubbles: false
-     *   - Composed: false
-     *   - Cancelable: false
-     *
-     * @event ProductDetailsDisplay#createandaddtolist
-     * @type {CustomEvent}
-     *
-     * @export
-     */
-
+export default class ProductDetailsDisplay extends NavigationMixin(LightningElement) {
     /**
      * A product image.
      * @typedef {object} Image

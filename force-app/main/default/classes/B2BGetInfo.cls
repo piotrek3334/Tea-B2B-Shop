@@ -1,4 +1,33 @@
 public with sharing class B2BGetInfo {
+
+  @AuraEnabled(cacheable=true)
+  public static ConnectApi.ProductOverviewCollection getAllProducts(
+    String communityId,
+    String effectiveAccountId) {
+
+    List<String> productId = new List<String>();
+    String webstoreId = B2BUtils.resolveCommunityIdToWebstoreId(communityId);
+    List<Product2> productIdList = [SELECT Id FROM Product2 WHERE isActive = true];
+
+    if(productIdList.isEmpty())   {
+      return null;
+    } else {
+      for (Product2 product : productIdList) {
+        productId.add(product.id);
+      }
+    }
+
+    return ConnectApi.ProductOverviewCollection listProducts = ConnectApi.CommerceCatalog.getProducts(
+      webstoreId,
+      effectiveAccountID,
+      productId,
+      null,
+      null,
+      true,
+      true
+    );
+  }
+
     @AuraEnabled(cacheable=true)
     public static ConnectApi.ProductDetail getProduct(
       String communityId,
@@ -8,7 +37,6 @@ public with sharing class B2BGetInfo {
       // Lookup the webstore ID associated with the community
       String webstoreId = B2BUtils.resolveCommunityIdToWebstoreId(communityId);
   
-      // https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_ConnectAPI_CommerceCatalog_static_methods.htm#apex_ConnectAPI_CommerceCatalog_static_methods
       return ConnectApi.CommerceCatalog.getProduct(
         webstoreId,
         productId,
