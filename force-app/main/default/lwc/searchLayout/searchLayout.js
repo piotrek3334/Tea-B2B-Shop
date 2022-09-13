@@ -5,6 +5,7 @@ import { LightningElement, api } from 'lwc';
  *
  * @fires SearchLayout#calltoaction
  * @fires SearchLayout#showdetail
+
  */
 export default class SearchLayout extends LightningElement {
     /**

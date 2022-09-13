@@ -9,15 +9,17 @@
             <div>
                 <a href={url} onclick={navigateToListView}>All opinions about our product</a>
             </div>
-            <lightning-record-edit-form if:false={isGuestUser} object-api-name="Product_Review__c">
-                <lightning-input-field class="slds-hidden" value={recordId} field-name="Product__c">
-                </lightning-input-field>
-                <lightning-input-field class="slds-form-element__label" field-name="Review__c"></lightning-input-field>
-                <div class="slds-var-m-top_medium">
-                    <lightning-button onclick={handleClick} variant="brand" type="submit" label="Save">
+            <div if:false={isGuestUser}>
+                <lightning-record-edit-form onsubmit={handleClick} onsuccess={handleSuccess}
+                    object-api-name="Product_Review__c">
+                    <lightning-input-field class="slds-hidden" value={recordId} field-name="Product__c">
+                    </lightning-input-field>
+                    <lightning-input-field class="reset" field-name="Review__c">
+                    </lightning-input-field>
+                    <lightning-button variant="brand" type="submit" label="Save">
                     </lightning-button>
-                </div>
-            </lightning-record-edit-form>
+                </lightning-record-edit-form>
+            </div>
         </lightning-accordion-section>
     </lightning-accordion>
 </template>
