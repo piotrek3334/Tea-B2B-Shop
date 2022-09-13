@@ -1,0 +1,19 @@
+<template>
+    <section class="products-area">
+        <template if:true={hasResults}>
+            <template for:each={displayData.data} for:item="product">
+                <lightning-card key={product.Id}>
+                    <c-comparator-tab product={product}>
+                    </c-comparator-tab>
+                </lightning-card>
+            </template>
+        </template>
+    </section>
+    <section class="buttons">
+        <lightning-button variant="destructive" label="Clean" onclick={handleCleanClick} class="slds-m-left_x-small">
+        </lightning-button>
+    </section>
+    <template if:false={hasResults}>
+        <p>Please add products to compare,then you will see result.</p>
+    </template>
+</template>

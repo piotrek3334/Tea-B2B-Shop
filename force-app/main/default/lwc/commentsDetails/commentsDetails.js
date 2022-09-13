@@ -4,13 +4,32 @@ import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
 import isGuest from '@salesforce/user/isGuest';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import {getRecordNotifyChange} from 'lightning/uiRecordApi';
 
 export default class CommentsDetails extends NavigationMixin(LightningElement) {
     @api recordId;
-    comments;
+    
+    @wire(getComments, { productId: "$recordId" })comments;
 
-    @wire(getComments, { productId: "$recordId" }) comments;
+    // wiredComments(result){
+    //     this.wiredCommentsResult = result;
+    //     if (result.data) {
+    //         this.comments = result.data;
+    //         this.error = undefined;
+    //     } else if (result.error) {
+    //         this.error = result.error;
+    //         this.comments = undefined;
+    //     }
+    // };
+
+    handleSuccess(event){
+        const payload= event.detail;
+        refreshApex(this.comments);
+        const inputFields = this.template.querySelectorAll('.reset');
+        if(inputFields){
+            inputFields.forEach(element => {element.reset();        
+            });
+        }
+    }
 
     handleClick() {
           this.dispatchEvent(
@@ -20,7 +39,6 @@ export default class CommentsDetails extends NavigationMixin(LightningElement) {
                   variant: 'success'
               })
           );
-      refreshApex(this.comments);
     }
     
     isGuestUser = isGuest;

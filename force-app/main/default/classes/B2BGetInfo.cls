@@ -1,32 +1,32 @@
 public with sharing class B2BGetInfo {
 
-  @AuraEnabled(cacheable=true)
-  public static ConnectApi.ProductOverviewCollection getAllProducts(
-    String communityId,
-    String effectiveAccountId) {
+  // @AuraEnabled(cacheable=true)
+  // public static ConnectApi.ProductOverviewCollection getAllProducts(
+  //   String communityId,
+  //   String effectiveAccountId) {
 
-    List<String> productId = new List<String>();
-    String webstoreId = B2BUtils.resolveCommunityIdToWebstoreId(communityId);
-    List<Product2> productIdList = [SELECT Id FROM Product2 WHERE isActive = true];
+  //   List<String> productId = new List<String>();
+  //   String webstoreId = B2BUtils.resolveCommunityIdToWebstoreId(communityId);
+  //   List<Product2> productIdList = [SELECT Id FROM Product2 WHERE isActive = true];
 
-    if(productIdList.isEmpty())   {
-      return null;
-    } else {
-      for (Product2 product : productIdList) {
-        productId.add(product.id);
-      }
-    }
+  //   if(productIdList.isEmpty())   {
+  //     return null;
+  //   } else {
+  //     for (Product2 product : productIdList) {
+  //       productId.add(product.id);
+  //     }
+  //   }
 
-    return ConnectApi.ProductOverviewCollection listProducts = ConnectApi.CommerceCatalog.getProducts(
-      webstoreId,
-      effectiveAccountID,
-      productId,
-      null,
-      null,
-      true,
-      true
-    );
-  }
+  //   return ConnectApi.ProductOverviewCollection listProducts = ConnectApi.CommerceCatalog.getProducts(
+  //     webstoreId,
+  //     effectiveAccountID,
+  //     productId,
+  //     null,
+  //     null,
+  //     true,
+  //     true
+  //   );
+  // }
 
     @AuraEnabled(cacheable=true)
     public static ConnectApi.ProductDetail getProduct(
@@ -130,9 +130,14 @@ public with sharing class B2BGetInfo {
       String wishlistName,
       String effectiveAccountId
     ) {
+      System.debug('communityId ' + communityId);
+      System.debug('productId ' + productId);
+      System.debug('wishlistName ' + wishlistName);
+      System.debug('effectiveAccountId ' + effectiveAccountId);
+
       // Lookup the webstore ID associated with the community
       String webstoreId = B2BUtils.resolveCommunityIdToWebstoreId(communityId);
-  
+      System.debug('webstoreId ' + webstoreId);
       // Store the product in a WishlistItemInput to pass to the Wishlist
       ConnectApi.WishlistItemInput wishlistItemInput = new ConnectApi.WishlistItemInput();
       wishlistItemInput.productId = productId;

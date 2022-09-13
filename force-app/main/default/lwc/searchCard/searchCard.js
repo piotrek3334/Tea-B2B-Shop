@@ -1,12 +1,36 @@
-import { LightningElement, api } from 'lwc';
-
+import { LightningElement, api} from 'lwc';
+import storeData from '@salesforce/apex/PartitionCacheController.storeData';
+import communityId from '@salesforce/community/Id';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import isGuest from '@salesforce/user/isGuest';
+import createAndAddToList from '@salesforce/apex/B2BGetInfo.createAndAddToList';
+import { NavigationMixin } from 'lightning/navigation';
 /**
  * An organized display of a single product card.
- *
+ * @fires SearchCard#createandaddtolist
  * @fires SearchCard#calltoaction
  * @fires SearchCard#showdetail
  */
-export default class SearchCard extends LightningElement {
+export default class SearchCard extends NavigationMixin(
+    LightningElement
+) {
+
+        /**
+     * An event fired when the user indicates the product should be added to a new wishlist
+     *
+     * Properties:
+     *   - Bubbles: false
+     *   - Composed: false
+     *   - Cancelable: false
+     *
+     * @event SearchCard#createandaddtolist
+     * @type {CustomEvent}
+     *
+     * @export
+     */
+
+
+
     /**
      * An event fired when the user clicked on the action button. Here in this
      *  this is an add to cart button.
@@ -122,6 +146,9 @@ export default class SearchCard extends LightningElement {
      */
     @api
     config;
+
+    isGuestUser = isGuest;
+
 
     /**
      * Gets the product image.
@@ -272,6 +299,18 @@ export default class SearchCard extends LightningElement {
         );
     }
 
+    addToCompareAction() {
+        storeData({product: this.displayData.id});
+
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: 'Success',
+                message: 'Your comparator has been updated.',
+                variant: 'success',
+            })
+        );
+    }
+
     /**
      * Emits a notification that the user indicates a desire to view the details of a product.
      *
@@ -289,4 +328,103 @@ export default class SearchCard extends LightningElement {
             })
         );
     }
+
+
+        /**
+     * An event fired when the user indicates the product should be added to a new wishlist
+     *
+     * Properties:
+     *   - Bubbles: false
+     *   - Composed: false
+     *   - Cancelable: false
+     *
+     * @event ProductDetailsDisplay#createandaddtolist
+     * @type {CustomEvent}
+     *
+     * @export
+     */
+    
+        /**
+     * Gets or sets the unique identifier of a product.
+     *
+     * @type {string}
+     */
+         @api
+         recordId;
+
+
+             /**
+     * Gets the normalized effective account of the user.
+     *
+     * @type {string}
+     * @readonly
+     * @private
+     */
+    get resolvedEffectiveAccountId() {
+        const effectiveAccountId = this.effectiveAccountId || '';
+        let resolved = null;
+
+        if (
+            effectiveAccountId.length > 0 &&
+            effectiveAccountId !== '000000000000000'
+        ) {
+            resolved = effectiveAccountId;
+        }
+        return resolved;
+    }
+
+        /**
+     * Emits a notification that the user wants to add the item to a new wishlist.
+     *
+     * @fires SearchCard#createandaddtolist
+     */
+         notifyCreateAndAddToList() {
+            console.log('dispatchEvent');
+            this.dispatchEvent(new CustomEvent(this.createAndAddToListt()));
+        }
+
+ /**
+     * Handles a user request to add the product to a newly created wishlist.
+     * On success, a success toast is shown to let the user know the product was added to a new list
+     * If there is an error, an error toast is shown with a message explaining that the product could not be added to a new list
+     *
+     * Toast documentation: https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.use_toast
+     *
+     * @private
+     */
+  createAndAddToListt() {
+    let listname = 'Wish List';
+    //let listname = this.product.data.primaryProductCategoryPath.path[0];
+    createAndAddToList({
+        communityId: communityId,
+        productId: this.displayData.id,
+        wishlistName: listname,
+        effectiveAccountId: this.resolvedEffectiveAccountId
+    })
+        .then(() => {
+            this.dispatchEvent(new CustomEvent('createandaddtolist'));
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Success',
+                    message: '{0} was added to a new list called "{1}"',
+                    messageData: [this.displayData.name, listname],
+                    variant: 'success',
+                    mode: 'dismissable'
+                })
+            );
+        })
+        .catch(() => {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message:
+                        '{0} could not be added to a new list. Please make sure you have fewer than 10 lists or try again later',
+                    messageData: [this.displayData.name],
+                    variant: 'error',
+                    mode: 'dismissable'
+                })
+            );
+        });
+}
+
 }
